@@ -54,3 +54,40 @@
 ## Что мы проверяем этим заданием
 
 В этом задании мы хотим проверить, можете ли вы разобраться в незнакомом коде и API, а также ваш навык отладки. Пожалуйста, опишите в коде или в файле README ход ваших мыслей: какие ошибки и как вы нашли, почему они возникли, как их можно исправить. Вы можете использовать сторонние инструменты и библиотеки на свое усмотрение, но мы ждем от вас комментария — что и зачем вы использовали.
+
+
+## Найденные ошибки
+
+В процессе отладки (F5) дебаггер нашел следующие ошибки:
+
+1. shri-2020-task-3\src\server.ts - строка 26:
+
+	conn.onInitialize((params: InitializeParams) => {
+	    return {
+	        capabilities: {
+	            textDocumentSync: 1
+	        }
+	    };
+	});
+
+	textDocumentSync не может принимать строку 'always', а только следующие значения: '0 | TextDocumentSyncOptions | 1 | 2 | undefined'.
+
+2.  shri-2020-task-3\src\server.ts - строка 82:
+
+	const validateProperty = (
+        property: jsonToAst.AstProperty
+    ): LinterProblem<RuleKeys>[] =>
+        /^[A-Z]+$/.test(property.key.value)
+            ? [
+                  {
+                      key: RuleKeys.UppercaseNamesIsForbidden,
+                      loc: property.loc
+                  }
+              ]
+            : [];
+
+    property является объектом интерфейса jsonToAst.AstProperty. У этого интерфейса есть значения key и loc. В свою очередь key использует интерфейс AstIdentifier, в котором есть значение value, но нет значения loc. Поэтому вместо property.key.loc нужно использовать property.loc.
+
+3. shri-2020-task-3\node_modules\vscode-languageserver\lib\main.js - строка 5:
+
+	/// <reference path="./thenable.d.ts" /> - в пути пропущено значение ".d"
